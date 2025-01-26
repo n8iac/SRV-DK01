@@ -1,0 +1,28 @@
+services:
+  nginxproxy:
+    image: jc21/nginx-proxy-manager:2.12.2
+    container_name: npm
+    networks:
+      - nginx
+    restart: unless-stopped
+    ports:
+      - 0.0.0.0:443/tcp
+    volumes:
+      - nginx:/data
+      - nginx_certs:/etc/letsencrypt
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  nginxproxy:
+    external: true
+  nginxproxy_certs:
+    external: true
+  
+networks:
+  nginx:
+    external: true
